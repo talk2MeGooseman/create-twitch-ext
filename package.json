@@ -1,0 +1,35 @@
+{
+  "name": "create-hello",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build.webpack": "webpack",
+    "minify": "terser --compress --mangle --toplevel --output dist/index.js -- dist/index.js",
+    "build": "npm run build.webpack && npm run minify",
+    "build.dev": "npm run build.bundle",
+    "dev": "npm run build.dev && npm start",
+    "version": "npm build"
+  },
+  "files": [
+    "dist/index.js"
+  ],
+  "bin": {
+    "create-twitch-ext": "dist/index.js"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^6.5.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^2.0.3",
+    "terser": "^4.6.10",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "colorette": "^1.1.0",
+    "inquirer": "^7.1.0"
+  }
+}
