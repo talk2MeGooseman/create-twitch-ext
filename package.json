@@ -1,14 +1,13 @@
 {
-  "name": "create-hello",
-  "version": "1.0.0",
+  "name": "create-twitch-ext",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build.webpack": "webpack",
     "minify": "terser --compress --mangle --toplevel --output dist/index.js -- dist/index.js",
     "build": "npm run build.webpack && npm run minify",
-    "build.dev": "npm run build.bundle",
-    "dev": "npm run build.dev && npm start",
+    "dev": "npm run build && npm start",
     "version": "npm build"
   },
   "files": [
@@ -29,7 +28,9 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "colorette": "^1.1.0",
-    "inquirer": "^7.1.0"
+    "chalk": "^4.0.0",
+    "commander": "^5.0.0",
+    "inquirer": "^7.1.0",
+    "validate-npm-package-name": "^3.0.0"
   }
 }
