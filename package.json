@@ -17,6 +17,8 @@
     "create-twitch-ext": "dist/index.js"
   },
   "devDependencies": {
+    "@types/cross-spawn": "^6.0.1",
+    "@types/fs-extra": "^8.1.0",
     "@types/inquirer": "^6.5.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
@@ -30,6 +32,8 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
+    "cross-spawn": "^7.0.2",
+    "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
     "validate-npm-package-name": "^3.0.0"
   }
