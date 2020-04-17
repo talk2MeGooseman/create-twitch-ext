@@ -2,10 +2,12 @@ import inquirer from 'inquirer'
 import chalk from 'chalk'
 import { Command } from 'commander'
 import path from 'path'
-import fs from 'fs-extra'
+import fs, { MoveOptions } from 'fs-extra'
 import os from 'os'
 import spawn from 'cross-spawn'
 import packageJson from '../package.json'
+import webpackTemplateJson from './webpack-template.json'
+const ejs = require('ejs')
 const validateProjectName = require('validate-npm-package-name')
 
 const program = new Command(packageJson.name)
@@ -144,19 +146,29 @@ function isSafeToCreateProjectIn(root: string, name: string) {
   return true
 }
 
-function run(root: string, appName: string, originalDirectory: string) {
+function run(appPath: string, appName: string, originalDirectory: string) {
+  let templateTypeAnswer: { type: any };
+
   const allDependencies = ['react', 'react-dom']
-  install(root, allDependencies)
+  install(allDependencies)
     .then(() => {
       return askForTemplateType()
     })
     .then((answer) => {
-      generatePlainJSProject({
-        root,
+      templateTypeAnswer = answer
+      return askForExtensionViews()
+    })
+    .then((answer) => {
+      return generateExtensionProject({
+        appPath,
         appName,
         originalDirectory,
-        template: answer.type,
+        templateName: templateTypeAnswer.type,
+        extensionViews: answer.type
       })
+    })
+    .then(() => {
+      displayCompleteMessage(appPath, appName)
     })
     .catch((reason) => {
       console.log()
@@ -171,31 +183,31 @@ function run(root: string, appName: string, originalDirectory: string) {
 
       // On 'exit' we will delete these files from target directory.
       const knownGeneratedFiles = ['package.json', 'package-lock.json', 'node_modules']
-      const currentFiles = fs.readdirSync(path.join(root))
+      const currentFiles = fs.readdirSync(path.join(appPath))
       currentFiles.forEach((file) => {
         knownGeneratedFiles.forEach((fileToMatch) => {
           // This removes all knownGeneratedFiles.
           if (file === fileToMatch) {
             console.log(`Deleting generated file... ${chalk.cyan(file)}`)
-            fs.removeSync(path.join(root, file))
+            fs.removeSync(path.join(appPath, file))
           }
         })
       })
-      const remainingFiles = fs.readdirSync(path.join(root))
+      const remainingFiles = fs.readdirSync(path.join(appPath))
       if (!remainingFiles.length) {
         // Delete target folder if empty
         console.log(
-          `Deleting ${chalk.cyan(`${appName}/`)} from ${chalk.cyan(path.resolve(root, '..'))}`,
+          `Deleting ${chalk.cyan(`${appName}/`)} from ${chalk.cyan(path.resolve(appPath, '..'))}`,
         )
-        process.chdir(path.resolve(root, '..'))
-        fs.removeSync(path.join(root))
+        process.chdir(path.resolve(appPath, '..'))
+        fs.removeSync(path.join(appPath))
       }
       console.log('Done.')
       process.exit(1)
     })
 }
 
-function install(root: string, dependencies: Array<string>) {
+function install(dependencies: Array<string>) {
   console.log('Installing packages. This might take a couple of minutes.')
 
   console.log(`Installing ${dependencies.map((dep) => chalk.cyan(dep)).join(', ')} ...`)
@@ -264,18 +276,22 @@ async function askForExtensionViews() {
         message: 'Select your extension type(s)',
         name: 'type',
         choices: [
-          new inquirer.Separator(' = The Meats = '),
+          new inquirer.Separator(' = Extension Type = '),
           {
             name: 'Video Overlay',
+            value: 'overlay',
           },
           {
             name: 'Video Component',
+            value: 'component',
           },
           {
             name: 'Panel',
+            value: 'panel',
           },
           {
             name: 'Mobile',
+            value: 'mobile',
           },
         ],
         validate: function (answer_1) {
@@ -300,27 +316,70 @@ async function askForExtensionViews() {
 }
 
 interface ProjectAttributes {
-  root: string
+  appPath: string
   appName: string
   originalDirectory: string
-  template: string
+  templateName: string,
+  extensionViews: string[],
 }
 
-function generatePlainJSProject({ root, appName, originalDirectory, template }: ProjectAttributes) {
-  console.log(path.join(root, 'package.json'))
+function generateExtensionProject({
+  appPath,
+  appName,
+  originalDirectory,
+  templateName,
+  extensionViews,
+}: ProjectAttributes) {
+  const templatePackageToMerge = ['dependencies', 'scripts']
+  const defaultExtensionViews = ['config'];
 
-  const appPackage = fs.readJsonSync(path.join(root, 'package.json'));
-  console.log(appPackage)
-  const templatePath = path.dirname(
-    require.resolve(`./${template}/README.md`)
-  );
-  console.log(templatePath)
-  // displayCompleteMessage(root, appName)
-}
-
-function copyFilesFromDir(appPath: string, templatePath: string) {
-  // Copy the files for the user
+  const templatePath = path.join(originalDirectory, 'src', templateName)
   const templateDir = path.join(templatePath, 'template')
+
+  const appPackage = fs.readJsonSync(path.join(appPath, 'package.json'))
+  const templateJson = fs.readJsonSync(path.join(templatePath, 'template.json'))
+  const webpackTemplateJson = fs.readJsonSync(path.join(originalDirectory, 'src', 'webpack-template.json'))
+  const webpackCommonPath = path.join(appPath, 'webpack.common.ejs')
+
+  // Copy the files from selected template into new project
+  copyFilesFromDir(appPath, templateDir)
+
+  // Configure package.json
+  const templateScripts = templateJson.package.scripts || {}
+  appPackage.scripts = Object.assign({}, templateScripts); // Include assign for future references
+
+  const templateDevDeps = templateJson.package.dependencies || {}
+  appPackage.devDependencies = Object.assign({}, templateDevDeps); // Include assign for future references
+  fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2) + os.EOL)
+
+  // Generate Webpack Common Config
+  const appWebpackCommon = fs.readFileSync(webpackCommonPath, 'utf8')
+  const webpackViews = extensionViews.concat(defaultExtensionViews).map((view) => webpackTemplateJson.HtmlWebpackPlugin[view])
+  const compiledWebpackCommon = ejs.render(appWebpackCommon, {
+    'views': webpackViews
+  })
+  fs.writeFileSync(path.join(appPath, 'webpack.common.ejs'), compiledWebpackCommon)
+  renameFile(appPath, 'webpack.common.ejs', 'webpack.common.js')
+
+  // Rename gitignore to .gitignore
+  renameFile(appPath, 'gitignore', '.gitignore')
+  return install([])
+}
+
+function renameFile(appPath: string, oldFileName: string, newFileName: string) {
+  const exists = fs.existsSync(path.join(appPath, newFileName))
+  if (exists) {
+    // Append if there's already a `.gitignore` file there
+    const data = fs.readFileSync(path.join(appPath, oldFileName))
+    fs.appendFileSync(path.join(appPath, newFileName), data)
+    fs.unlinkSync(path.join(appPath, oldFileName))
+  } else {
+    fs.moveSync(path.join(appPath, oldFileName), path.join(appPath, newFileName))
+  }
+}
+
+function copyFilesFromDir(appPath: string, templateDir: string) {
+  // Copy the files for the user
   if (fs.existsSync(templateDir)) {
     fs.copySync(templateDir, appPath)
   } else {

@@ -1,7 +1,7 @@
-const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: {
@@ -17,39 +17,17 @@ module.exports = {
     }),
     // Plugins dynamically add script tag to HTML file
     // that will include JS files
+    <%- views.map((v) => {
+      return `
     new HtmlWebpackPlugin({
       // Inserts Title tag to HTML template
-      title: 'Video Overlay View',
+      title: '${v.title}',
       // Template HTML file
-      template: 'src/index.html',
+      template: '${v.template}',
       // Creates new HTML file by name
-      filename: 'video_overlay.html',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Video Component View',
-      template: 'src/index.html',
-      filename: 'video_component.html',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Panel View',
-      template: 'src/index.html',
-      filename: 'panel.html',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Mobile View',
-      template: 'src/index.html',
-      filename: 'mobile.html',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Broadcaster Configuration View',
-      template: 'src/index.html',
-      filename: 'config.html',
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Live Configuration View',
-      template: 'src/index.html',
-      filename: 'live_config.html',
-    }),
+      filename: '${v.filename}',
+    })`
+    },).join(',\n') %>
   ],
   output: {
     filename: '[name].bundle.js',
@@ -90,4 +68,4 @@ module.exports = {
       },
     },
   },
-};
+}

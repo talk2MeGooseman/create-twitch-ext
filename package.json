@@ -33,6 +33,7 @@
     "chalk": "^4.0.0",
     "commander": "^5.0.0",
     "cross-spawn": "^7.0.2",
+    "ejs": "^3.0.2",
     "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
     "validate-npm-package-name": "^3.0.0"

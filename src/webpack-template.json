@@ -1,0 +1,34 @@
+{
+  "HtmlWebpackPlugin": {
+    "overlay": {
+      "title": "Video Overlay View",
+      "template": "src/index.html",
+      "filename": "video_overlay.html"
+    },
+    "component": {
+      "title": "Video Component View",
+      "template": "src/index.html",
+      "filename": "video_component.html"
+    },
+    "panel": {
+      "title": "Panel View",
+      "template": "src/index.html",
+      "filename": "panel.html"
+    },
+    "mobile": {
+      "title": "Mobile View",
+      "template": "src/index.html",
+      "filename": "mobile.html"
+    },
+    "config": {
+      "title": "Broadcaster Configuration View",
+      "template": "src/index.html",
+      "filename": "config.html"
+    },
+    "live_config": {
+      "title": "Live Configuration View",
+      "template": "src/index.html",
+      "filename": "live_config.html"
+    }
+  }
+}
