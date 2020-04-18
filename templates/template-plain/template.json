@@ -1,6 +1,7 @@
 {
   "package": {
-    "dependencies": {
+    "dependencies": ["axios"],
+    "devDependencies": {
       "clean-webpack-plugin": "^3.0.0",
       "css-loader": "^3.4.2",
       "file-loader": "^6.0.0",
