@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
@@ -19,4 +20,11 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  plugins: [
+    // Adds the executable indicator to the top of the output file
+    new webpack.BannerPlugin({
+      raw: true,
+      banner: '#!/usr/bin/env node',
+    }),
+  ],
 }

@@ -7,8 +7,10 @@ import os from 'os'
 import spawn from 'cross-spawn'
 import packageJson from '../package.json'
 import webpackTemplateJson from './webpack-template.json'
-const ejs = require('ejs')
-const validateProjectName = require('validate-npm-package-name')
+import ejs from 'ejs'
+import validateProjectName from 'validate-npm-package-name'
+
+interface JsonType { [key: string]: any }
 
 const program = new Command(packageJson.name)
 let projectName
@@ -149,7 +151,7 @@ function isSafeToCreateProjectIn(root: string, name: string) {
 function run(appPath: string, appName: string, originalDirectory: string) {
   let templateTypeAnswer: { type: any };
 
-  const allDependencies = ['react', 'react-dom']
+  const allDependencies = ['axios']
   install(allDependencies)
     .then(() => {
       return askForTemplateType()
@@ -331,14 +333,14 @@ function generateExtensionProject({
   extensionViews,
 }: ProjectAttributes) {
   const templatePackageToMerge = ['dependencies', 'scripts']
-  const defaultExtensionViews = ['config'];
+  const defaultExtensionViews = ['config']
+  const cliPath = process.argv[1]
 
-  const templatePath = path.join(originalDirectory, 'src', templateName)
+  const templatePath = path.join(cliPath, 'templates', templateName)
   const templateDir = path.join(templatePath, 'template')
 
   const appPackage = fs.readJsonSync(path.join(appPath, 'package.json'))
   const templateJson = fs.readJsonSync(path.join(templatePath, 'template.json'))
-  const webpackTemplateJson = fs.readJsonSync(path.join(originalDirectory, 'src', 'webpack-template.json'))
   const webpackCommonPath = path.join(appPath, 'webpack.common.ejs')
 
   // Copy the files from selected template into new project
@@ -354,7 +356,7 @@ function generateExtensionProject({
 
   // Generate Webpack Common Config
   const appWebpackCommon = fs.readFileSync(webpackCommonPath, 'utf8')
-  const webpackViews = extensionViews.concat(defaultExtensionViews).map((view) => webpackTemplateJson.HtmlWebpackPlugin[view])
+  const webpackViews = extensionViews.concat(defaultExtensionViews).map((view) => (webpackTemplateJson as JsonType).HtmlWebpackPlugin[view])
   const compiledWebpackCommon = ejs.render(appWebpackCommon, {
     'views': webpackViews
   })
@@ -396,10 +398,10 @@ function displayCompleteMessage(appPath: string, appName: string) {
   console.log(chalk.cyan('  npm start'))
   console.log('    Starts the development server.')
   console.log()
-  console.log(chalk.cyan('npm run build'))
+  console.log(chalk.cyan('  npm run build'))
+  console.log('    Builds extension for production.')
   console.log()
-  console.log('We suggest that you begin by typing:')
-  console.log()
-  console.log(chalk.cyan('  cd'), appName)
-  console.log(`  ${chalk.cyan('npm start')}`)
+  console.log(chalk.green('  To get started, begin by typing:'))
+  console.log(chalk.cyan('    cd'), appName)
+  console.log(`    ${chalk.cyan('npm start')}`)
 }
