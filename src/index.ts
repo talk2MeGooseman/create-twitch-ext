@@ -10,6 +10,7 @@ import validateProjectName from 'validate-npm-package-name'
 import { askForTemplateType } from './prompts/askForTemplateTypes'
 import { askForExtensionViews } from './prompts/askForExtensionViews'
 import { copyFilesFromDir, isSafeToCreateProjectIn, renameFile } from './fs-tools'
+import resolvePkg from 'resolve-pkg'
 
 interface JsonType {
   [key: string]: any
@@ -193,7 +194,7 @@ async function generateExtensionProject({
   extensionViews,
 }: ProjectAttributes) {
   const defaultExtensionViews = ['config']
-  const cliPath = process.argv[1]
+  const cliPath = resolvePkg('create-twitch-ext')
 
   const templatePath = path.join(cliPath, 'templates', templateName)
   const templateDir = path.join(templatePath, 'template')
