@@ -1,7 +1,14 @@
 {
   "name": "create-twitch-ext",
+  "description": "A CLI tool to easily create a Twitch Extension from scratch",
+  "author": "Erik Guzman (https://twitch.tv/talk2megooseman)",
+  "license": "MIT",
   "version": "0.0.1",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/talk2megooseman/create-twitch-ext.git"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "build.webpack": "webpack",
@@ -11,7 +18,13 @@
     "version": "npm build"
   },
   "files": [
-    "dist/index.js"
+    "dist/index.js",
+    "templates/"
+  ],
+  "keywords": [
+    "twitch",
+    "extension",
+    "generator"
   ],
   "bin": {
     "create-twitch-ext": "dist/index.js"
