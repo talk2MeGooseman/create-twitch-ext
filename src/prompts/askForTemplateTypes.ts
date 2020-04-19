@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 const TEMPLATES = [
   {
-    name: 'Plain JavaScript',
+    name: 'Vanilla JavaScript',
     value: 'template-plain',
   }
 ];

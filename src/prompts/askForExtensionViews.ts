@@ -18,6 +18,11 @@ const EXTENSION_TYPES = [
     name: 'Mobile',
     value: 'mobile',
   },
+  new inquirer.Separator(' = Additional Views = '),
+  {
+    name: 'Live Configuration View (Shows on Broadcaster Dashboard)',
+    value: 'live_config',
+  },
 ]
 
 export async function askForExtensionViews() {

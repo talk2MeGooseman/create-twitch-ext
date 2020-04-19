@@ -5,7 +5,6 @@ import fs from 'fs-extra'
 import os from 'os'
 import spawn from 'cross-spawn'
 import packageJson from '../package.json'
-import webpackTemplateJson from './webpack-template.json'
 import ejs from 'ejs'
 import validateProjectName from 'validate-npm-package-name'
 import { askForTemplateType } from './prompts/askForTemplateTypes'
@@ -193,7 +192,6 @@ async function generateExtensionProject({
   templateName,
   extensionViews,
 }: ProjectAttributes) {
-  const templatePackageToMerge = ['dependencies', 'scripts']
   const defaultExtensionViews = ['config']
   const cliPath = process.argv[1]
 
@@ -202,6 +200,7 @@ async function generateExtensionProject({
 
   const appPackage = fs.readJsonSync(path.join(appPath, 'package.json'))
   const templateJson = fs.readJsonSync(path.join(templatePath, 'template.json'))
+  const webpackTemplateJson = fs.readJsonSync(path.join(templatePath, 'webpack-template.json'))
   const webpackCommonPath = path.join(appPath, 'webpack.common.ejs')
 
   // Copy the files from selected template into new project
@@ -223,6 +222,7 @@ async function generateExtensionProject({
   const compiledWebpackCommon = ejs.render(appWebpackCommon, {
     views: webpackViews,
   })
+
   // Update webpack common config with HTML templates
   fs.writeFileSync(path.join(appPath, 'webpack.common.ejs'), compiledWebpackCommon)
   // Rename file for ejs to js
