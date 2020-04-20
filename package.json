@@ -3,7 +3,7 @@
   "description": "A CLI tool to easily create a Twitch Extension from scratch",
   "author": "Erik Guzman (https://twitch.tv/talk2megooseman)",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
