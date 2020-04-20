@@ -19,8 +19,9 @@ This repository is intended to be a bare-bones example so you can then customize
 
 Inside `src` all generated HTML views use the same index.html template. If you would like to build a custom HTML page for the different Extension view you can do so by:
 
-- Creating a new HTML page (it doesn't have to be called index.html)
-- Open `webpack.common.js` and modify `template` to use your new HTML file
+- Creating a new HTML page, it should to be called something other then `index.html`, this will be your template base HTML.
+- Open `webpack.common.js` and modify the `template` field to use your new HTML file.
+- What you call `npm run build` to build new HTML page using your new base template.
 
 Your JavaScript files will automatically be included in the HTML page using webpack. So all you have to do is write you JavaScript and webpack should handle the rest.
 
