@@ -194,7 +194,7 @@ async function generateExtensionProject({
   extensionViews,
 }: ProjectAttributes) {
   const defaultExtensionViews = ['config']
-  const cliPath = resolvePkg('create-twitch-ext')
+  const cliPath = resolvePkg('create-twitch-ext', { cwd: process.argv[1] })
 
   const templatePath = path.join(cliPath, 'templates', templateName)
   const templateDir = path.join(templatePath, 'template')
