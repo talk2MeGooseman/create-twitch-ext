@@ -33,7 +33,9 @@ npm start
 
 ```
 
-This command will use `webpack-dev-server` to run a local server to serve the assets on `http://localhost:8080`. You can then load each page by visiting their corresponding address like `http://localhost:8080/panel.html`
+This command will use `webpack-dev-server` to run a local server to serve the assets on `https://localhost:8080`. You can then load each page by visiting their corresponding address like `https://localhost:8080/panel.html`
+
+You will get a warning for an invalid certification because were using SSL. This is expected and don't worry, just accept and you should bee good to go developing.`
 
 ## Building for Release
 
