@@ -3,19 +3,16 @@
   "description": "A CLI tool to easily create a Twitch Extension from scratch",
   "author": "Erik Guzman (https://twitch.tv/talk2megooseman)",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/talk2megooseman/create-twitch-ext.git"
   },
   "scripts": {
-    "start": "node dist/index.js",
     "build.webpack": "webpack",
     "minify": "terser --compress --mangle --toplevel --output dist/index.js -- dist/index.js",
-    "build": "npm run build.webpack && npm run minify",
-    "dev": "npm run build.webpack --watch",
-    "version": "npm build"
+    "build": "npm run build.webpack && npm run minify"
   },
   "files": [
     "dist/index.js",
@@ -51,7 +48,6 @@
     "ejs": "^3.0.2",
     "fs-extra": "^9.0.0",
     "inquirer": "^7.1.0",
-    "resolve-from": "^5.0.0",
     "resolve-pkg": "^2.0.0",
     "validate-npm-package-name": "^3.0.0"
   }

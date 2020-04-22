@@ -22,12 +22,12 @@
     },
     "config": {
       "title": "Broadcaster Configuration View",
-      "template": "src/index.html",
+      "template": "src/config.html",
       "filename": "config.html"
     },
     "live_config": {
       "title": "Live Configuration View",
-      "template": "src/index.html",
+      "template": "src/config.html",
       "filename": "live_config.html"
     }
   }
