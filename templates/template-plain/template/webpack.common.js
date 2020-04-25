@@ -2,6 +2,21 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HTML_VIEWS = require('./html-views.json')
+
+function buildHtmlWebpackPluginItems() {
+  return HTML_VIEWS.HtmlWebpackPlugin.reduce(function (accum, { title, template, filename }) {
+    accum.push(
+      new HtmlWebpackPlugin({
+        title,
+        template,
+        filename,
+      }),
+    )
+
+    return accum
+  }, [])
+}
 
 module.exports = {
   entry: {
@@ -17,17 +32,7 @@ module.exports = {
     }),
     // Plugins dynamically add script tag to HTML file
     // that will include JS files
-    <%- views.map((v) => {
-      return `
-    new HtmlWebpackPlugin({
-      // Inserts Title tag to HTML template
-      title: '${v.title}',
-      // Template HTML file
-      template: '${v.template}',
-      // Creates new HTML file by name
-      filename: '${v.filename}',
-    })`
-    },).join(',\n') %>
+    ...buildHtmlWebpackPluginItems(),
   ],
   output: {
     filename: '[name].bundle.js',

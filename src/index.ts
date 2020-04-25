@@ -26,6 +26,12 @@ interface ProjectAttributes {
   extensionViews: string[]
 }
 
+interface HtmlWebpackPluginType {
+  title: string
+  template: string
+  filename: string
+}
+
 const program = new Command(packageJson.name)
 let projectName
 
@@ -202,7 +208,6 @@ async function generateExtensionProject({
   const appPackage = fs.readJsonSync(path.join(appPath, 'package.json'))
   const templateJson = fs.readJsonSync(path.join(templatePath, 'template.json'))
   const webpackTemplateJson = fs.readJsonSync(path.join(templatePath, 'webpack-template.json'))
-  const webpackCommonPath = path.join(appPath, 'webpack.common.ejs')
 
   // Copy the files from selected template into new project
   copyFilesFromDir(appPath, templateDir)
@@ -216,18 +221,13 @@ async function generateExtensionProject({
   fs.writeFileSync(path.join(appPath, 'package.json'), JSON.stringify(appPackage, null, 2) + os.EOL)
 
   // Generate Webpack Common Config
-  const appWebpackCommon = fs.readFileSync(webpackCommonPath, 'utf8')
-  const webpackViews = extensionViews
+  const webpackViews: HtmlWebpackPluginType[] = extensionViews
     .concat(defaultExtensionViews)
     .map((view) => (webpackTemplateJson as JsonType).HtmlWebpackPlugin[view])
-  const compiledWebpackCommon = ejs.render(appWebpackCommon, {
-    views: webpackViews,
-  })
 
-  // Update webpack common config with HTML templates
-  fs.writeFileSync(path.join(appPath, 'webpack.common.ejs'), compiledWebpackCommon)
-  // Rename file for ejs to js
-  renameFile(appPath, 'webpack.common.ejs', 'webpack.common.js')
+  const htmlViewsJson = { HtmlWebpackPlugin: [] as HtmlWebpackPluginType[] }
+  htmlViewsJson.HtmlWebpackPlugin = webpackViews
+  fs.writeFileSync(path.join(appPath, 'html-views.json'), JSON.stringify(htmlViewsJson, null, 2) + os.EOL)
 
   // Rename gitignore to .gitignore
   renameFile(appPath, 'gitignore', '.gitignore')
