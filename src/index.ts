@@ -181,7 +181,7 @@ function install(dependencies: string[]) {
         })
         return
       }
-      resolve()
+      resolve(null)
     })
   })
 }

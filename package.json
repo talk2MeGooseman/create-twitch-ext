@@ -10,9 +10,11 @@
     "url": "git+https://github.com/talk2megooseman/create-twitch-ext.git"
   },
   "scripts": {
-    "build.webpack": "webpack",
+    "watch": "webpack --watch --env MODE=development",
+    "webpack": "webpack",
     "minify": "terser --compress --mangle --toplevel --output dist/index.js -- dist/index.js",
-    "build": "npm run build.webpack && npm run minify"
+    "build": "npm run webpack && npm run minify",
+    "webpack.check": "node --trace-deprecation node_modules/webpack/bin/webpack.js"
   },
   "files": [
     "dist/index.js",
@@ -27,27 +29,28 @@
     "create-twitch-ext": "dist/index.js"
   },
   "devDependencies": {
-    "@types/cross-spawn": "^6.0.1",
-    "@types/ejs": "^3.0.2",
-    "@types/fs-extra": "^8.1.0",
-    "@types/inquirer": "^6.5.0",
-    "@types/validate-npm-package-name": "^3.0.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^2.0.3",
-    "terser": "^4.6.10",
-    "ts-loader": "^6.2.2",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "@types/cross-spawn": "^6.0.2",
+    "@types/ejs": "^3.0.5",
+    "@types/fs-extra": "^9.0.5",
+    "@types/inquirer": "^7.3.1",
+    "@types/validate-npm-package-name": "^3.0.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "prettier": "^2.2.1",
+    "terser": "^5.5.1",
+    "ts-loader": "^8.0.12",
+    "typescript": "^4.1.3",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "chalk": "^4.0.0",
-    "commander": "^5.0.0",
-    "cross-spawn": "^7.0.2",
-    "ejs": "^3.0.2",
-    "fs-extra": "^9.0.0",
-    "inquirer": "^7.1.0",
+    "chalk": "^4.1.0",
+    "commander": "^5.1.0",
+    "cross-spawn": "^7.0.3",
+    "ejs": "^3.1.5",
+    "fs-extra": "^9.0.1",
+    "inquirer": "^7.3.3",
     "resolve-pkg": "^2.0.0",
     "validate-npm-package-name": "^3.0.0"
   }
